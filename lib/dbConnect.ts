@@ -1,24 +1,31 @@
-import mongoose from "mongoose";
-const MONGODB_URI = process.env.MONGODB_URI!;
+// lib/mongoose.ts
+import mongoose from 'mongoose';
+
+const MONGODB_URI = process.env.MONGODB_URI || 'your-mongodb-connection-string';
 
 if (!MONGODB_URI) {
-  throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local",
-  );
+  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
 }
-let isConnected = false;
 
-export const dbConnect = async () => {
-  mongoose.set("strictQuery", true);
-  if (isConnected) {
-    console.log("DB connected already");
+let cached = (global as any).mongoose;
 
-    return;
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null };
+}
+
+async function dbConnect() {
+  if (cached.conn) {
+    return cached.conn;
   }
-  try {
-    await mongoose.connect(MONGODB_URI);
-    isConnected = true;
-  } catch (error) {
-    console.log(error);
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
+      return mongoose;
+    });
   }
-};
+
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
+
+export default dbConnect;

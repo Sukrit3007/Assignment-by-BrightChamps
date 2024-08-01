@@ -2,9 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
-
 import Quiz, { questionType } from "../models/quiz.model";
-import { dbConnect } from "../dbConnect";
+import dbConnect from "../dbConnect";
 
 export async function createQuiz({
   name,
@@ -36,7 +35,7 @@ export interface quizWithIdType {
 export async function fetchQuiz(): Promise<quizWithIdType[]> {
   try {
     await dbConnect();
-    const quiz = await Quiz.find();
+    const quiz = await Quiz.find({});
 
     return quiz as quizWithIdType[];
   } catch (error: any) {

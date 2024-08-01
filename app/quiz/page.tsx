@@ -15,7 +15,7 @@ interface QuizDataType {
 
 export default async function QuizPage() {
   const data = await fetchQuiz();
-  const quizData = await JSON.parse(JSON.stringify(data))
+  const quizData = await JSON.parse(JSON.stringify(data));
 
   return (
     <div>
