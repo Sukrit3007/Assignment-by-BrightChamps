@@ -3,7 +3,7 @@
 import { Card, CardHeader } from "@nextui-org/card";
 import React from "react";
 import { Button } from "@nextui-org/button";
-import {Divider} from "@nextui-org/divider";
+import { Divider } from "@nextui-org/divider";
 import { Trash } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "@nextui-org/link";
@@ -57,16 +57,17 @@ const QuizCards = ({ quiz }: Props) => {
     >
       {quiz.map((data) => (
         <motion.div key={data._id} variants={FADE_UP_ANIMATION_VARIANTS}>
-          <Card className="w-full" shadow="none">
-            <CardHeader className="items-center justify-between">
+          <Card className="w-full" shadow="none" >
+            <CardHeader className="gap-4 items-center justify-between flex-wrap">
               <motion.h1
                 className={title({ size: "sm" })}
                 variants={FADE_UP_ANIMATION_VARIANTS}
               >
                 {data.name}
               </motion.h1>
+
               <div className="flex items-center justify-end gap-2">
-                <Button
+              <Button
                   isIconOnly
                   color="danger"
                   endContent={<Trash size={16} />}
@@ -87,7 +88,7 @@ const QuizCards = ({ quiz }: Props) => {
               </div>
             </CardHeader>
           </Card>
-          <Divider className="my-2" />
+          <Divider className="my-2"/>
         </motion.div>
       ))}
     </motion.div>

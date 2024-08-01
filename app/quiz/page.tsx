@@ -1,4 +1,3 @@
-
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
@@ -8,8 +7,9 @@ import QuizCards from "@/components/ui/QuizCards";
 import { fetchQuiz } from "@/lib/actions/quiz.action";
 
 export default async function QuizPage() {
-  const quizData = await fetchQuiz();
-
+  const data = await fetchQuiz();
+  const quizData = await JSON.parse(JSON.stringify(data))
+  
   return (
     <div>
       {quizData.length > 0 ? (
@@ -23,7 +23,7 @@ export default async function QuizPage() {
             </h1>
           </CardHeader>
           <CardBody>
-            <QuizCards quiz={JSON.parse(JSON.stringify(quizData))} />
+            <QuizCards quiz={quizData} />
           </CardBody>
         </Card>
       ) : (
