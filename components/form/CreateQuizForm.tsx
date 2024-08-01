@@ -88,12 +88,10 @@ const CreateQuizForm = () => {
         questions: values.questions,
         path: path,
       });
-      console.log(values);
       toast.success("Quiz has been created");
       setLoading(false);
       router.push("/");
     } catch (error) {
-      console.error(error);
       toast.error("Failed to create quiz");
     }
   }

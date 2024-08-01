@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardHeader } from "@nextui-org/card";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Divider } from "@nextui-org/divider";
 import { Trash } from "lucide-react";
@@ -20,6 +20,7 @@ interface Props {
 }
 
 const QuizCards = ({ quizId, quizName }: Props) => {
+  const [loading, setloading] = useState(false);
   const path = usePathname();
 
   const FADE_UP_ANIMATION_VARIANTS = {
@@ -29,8 +30,10 @@ const QuizCards = ({ quizId, quizName }: Props) => {
 
   const onDelete = (id: string) => async () => {
     try {
+      setloading(true);
       await deleteQuizById(id, path);
       toast.info("Quiz deleted successfully");
+      setloading(false);
     } catch (error) {
       toast.error("Failed to delete quiz");
     }
@@ -66,6 +69,7 @@ const QuizCards = ({ quizId, quizName }: Props) => {
                 isIconOnly
                 color="danger"
                 endContent={<Trash size={16} />}
+                isDisabled={loading}
                 size="sm"
                 variant="flat"
                 onClick={onDelete(quizId)}
