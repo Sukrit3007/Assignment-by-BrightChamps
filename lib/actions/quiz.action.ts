@@ -35,7 +35,7 @@ export interface quizWithIdType {
 export async function fetchQuiz(): Promise<quizWithIdType[]> {
   try {
     await dbConnect();
-    const quiz = await Quiz.find({});
+    const quiz = await Quiz.find({}).select("_id name");
 
     return quiz as quizWithIdType[];
   } catch (error: any) {
