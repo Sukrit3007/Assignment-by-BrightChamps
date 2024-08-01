@@ -5,11 +5,18 @@ import { Link } from "@nextui-org/link";
 import { title } from "@/components/primitives";
 import QuizCards from "@/components/ui/QuizCards";
 import { fetchQuiz } from "@/lib/actions/quiz.action";
+import { questionType } from "@/lib/models/quiz.model";
+
+interface QuizDataType {
+  _id: string;
+  name: string;
+  questions: questionType[];
+}
 
 export default async function QuizPage() {
   const data = await fetchQuiz();
-  const quizData = await JSON.parse(JSON.stringify(data))
-  
+  const quizData: QuizDataType[] = JSON.parse(JSON.stringify(data));
+
   return (
     <div>
       {quizData.length > 0 ? (
@@ -23,7 +30,13 @@ export default async function QuizPage() {
             </h1>
           </CardHeader>
           <CardBody>
-            <QuizCards quiz={quizData} />
+            {quizData.map((quizItem) => (
+              <QuizCards
+                key={quizItem._id}
+                quizId={quizItem._id}
+                quizName={quizItem.name}
+              />
+            ))}
           </CardBody>
         </Card>
       ) : (

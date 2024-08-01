@@ -12,18 +12,14 @@ import { usePathname } from "next/navigation";
 
 import { title } from "../primitives";
 
-import { questionType } from "@/lib/models/quiz.model";
 import { deleteQuizById } from "@/lib/actions/quiz.action";
 
 interface Props {
-  quiz: {
-    _id: string;
-    name: string;
-    questions: questionType[];
-  }[];
+  quizId: string;
+  quizName: string;
 }
 
-const QuizCards = ({ quiz }: Props) => {
+const QuizCards = ({ quizId, quizName }: Props) => {
   const path = usePathname();
 
   const FADE_UP_ANIMATION_VARIANTS = {
@@ -55,42 +51,40 @@ const QuizCards = ({ quiz }: Props) => {
       }}
       viewport={{ once: true }}
     >
-      {quiz.map((data) => (
-        <motion.div key={data._id} variants={FADE_UP_ANIMATION_VARIANTS}>
-          <Card className="w-full" shadow="none" >
-            <CardHeader className="gap-4 items-center justify-between flex-wrap">
-              <motion.h1
-                className={title({ size: "sm" })}
-                variants={FADE_UP_ANIMATION_VARIANTS}
-              >
-                {data.name}
-              </motion.h1>
+      <motion.div variants={FADE_UP_ANIMATION_VARIANTS}>
+        <Card className="w-full" shadow="none">
+          <CardHeader className="gap-4 items-center justify-between flex-wrap">
+            <motion.h1
+              className={title({ size: "sm" })}
+              variants={FADE_UP_ANIMATION_VARIANTS}
+            >
+              {quizName}
+            </motion.h1>
 
-              <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-2">
               <Button
-                  isIconOnly
-                  color="danger"
-                  endContent={<Trash size={16} />}
-                  size="sm"
-                  variant="flat"
-                  onClick={onDelete(data._id)}
-                />
-                <Button
-                  as={Link}
-                  color="success"
-                  href={`/quiz/${data._id}`}
-                  radius="full"
-                  size="sm"
-                  variant="flat"
-                >
-                  Start
-                </Button>
-              </div>
-            </CardHeader>
-          </Card>
-          <Divider className="my-2"/>
-        </motion.div>
-      ))}
+                isIconOnly
+                color="danger"
+                endContent={<Trash size={16} />}
+                size="sm"
+                variant="flat"
+                onClick={onDelete(quizId)}
+              />
+              <Button
+                as={Link}
+                color="success"
+                href={`/quiz/${quizId}`}
+                radius="full"
+                size="sm"
+                variant="flat"
+              >
+                Start
+              </Button>
+            </div>
+          </CardHeader>
+        </Card>
+        <Divider className="my-2" />
+      </motion.div>
     </motion.div>
   );
 };
