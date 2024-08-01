@@ -1,3 +1,4 @@
+
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
@@ -11,7 +12,7 @@ export default async function QuizPage() {
 
   return (
     <div>
-      {quizData ? (
+      {quizData.length > 0 ? (
         <Card>
           <CardHeader>
             <h1 className={title({ size: "lg" })}>
