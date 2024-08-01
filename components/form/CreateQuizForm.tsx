@@ -8,6 +8,7 @@ import { Button } from "@nextui-org/button";
 import { PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 
 import {
   Form,
@@ -54,6 +55,7 @@ const formSchema = z.object({
 });
 
 const CreateQuizForm = () => {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const path = usePathname();
 
@@ -80,6 +82,7 @@ const CreateQuizForm = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      setLoading(true);
       await createQuiz({
         name: values.name,
         questions: values.questions,
@@ -87,6 +90,7 @@ const CreateQuizForm = () => {
       });
       console.log(values);
       toast.success("Quiz has been created");
+      setLoading(false);
       router.push("/");
     } catch (error) {
       console.error(error);
@@ -230,12 +234,13 @@ const CreateQuizForm = () => {
 
         <Button
           className="w-full"
-          color="success"
+          color={loading ? "default" : "success"}
+          disabled={loading}
           radius="full"
           type="submit"
           variant="flat"
         >
-          Submit
+          {loading ? "Loading..." : "Submit"}
         </Button>
       </form>
     </Form>
