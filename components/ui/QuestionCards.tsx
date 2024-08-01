@@ -4,30 +4,34 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
-import { CheckIcon, ChevronRightIcon } from "lucide-react";
+import { CheckIcon, ChevronRightIcon, RotateCw } from "lucide-react";
 import { Progress } from "@nextui-org/progress";
-import { Label, Pie, PieChart } from "recharts";
+import { Link } from "@nextui-org/link";
 
-// import {
-//   ChartConfig,
-//   ChartContainer,
-//   ChartTooltip,
-//   ChartTooltipContent,
-// } from "@/components/ui/chart";
+import { ResultGraph } from "./ResultGraph";
+
+interface QuizQuestion {
+  correctOption: string;
+  marks: number;
+  options: string[];
+  questionText: string;
+  timeLimit: number;
+}
+
+interface Quiz {
+  _id: string;
+  name: string;
+  questions: QuizQuestion[];
+}
 
 interface Props {
-  quizQuestions: {
-    _id: string;
-    name: string;
-    questions: {
-      correctOption: string;
-      marks: number;
-      options: string[];
-      questionText: string;
-      timeLimit: number;
-    }[];
-  };
+  quizQuestions: Quiz;
 }
+
+const FADE_UP_ANIMATION_VARIANTS = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { type: "spring" } },
+};
 
 const QuestionCards: React.FC<Props> = ({ quizQuestions }) => {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
@@ -42,16 +46,9 @@ const QuestionCards: React.FC<Props> = ({ quizQuestions }) => {
     correctAnswer: 0,
     wrongAnswer: 0,
   });
-  const [timeLeft, setTimeLeft] = useState<number>(
-    quizQuestions.questions[currentQuestion].timeLimit,
-  );
   const totalQuestionTime = quizQuestions.questions[currentQuestion].timeLimit;
+  const [timeLeft, setTimeLeft] = useState<number>(totalQuestionTime);
   const [timerExpired, setTimerExpired] = useState(false);
-
-  const FADE_UP_ANIMATION_VARIANTS = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0, transition: { type: "spring" } },
-  };
 
   useEffect(() => {
     // Reset timer for the new question
@@ -72,28 +69,20 @@ const QuestionCards: React.FC<Props> = ({ quizQuestions }) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [currentQuestion]);
+  }, [currentQuestion, totalQuestionTime]);
 
   useEffect(() => {
     if (timerExpired && !checked) {
       handleNextQuestion();
     }
-  }, [timerExpired]);
+  }, [timerExpired, checked]);
 
-  const handleSelectedOption = ({
-    option,
-    index,
-  }: {
-    option: string;
-    index: number;
-  }) => {
+  const handleSelectedOption = (option: string, index: number) => {
     setChecked(true);
     setSelectedAnswerIndex(index);
-    if (option === quizQuestions.questions[currentQuestion].correctOption) {
-      setSelectedAnswer(true);
-    } else {
-      setSelectedAnswer(false);
-    }
+    setSelectedAnswer(
+      option === quizQuestions.questions[currentQuestion].correctOption,
+    );
   };
 
   const handleNextQuestion = () => {
@@ -121,10 +110,8 @@ const QuestionCards: React.FC<Props> = ({ quizQuestions }) => {
       setSelectedAnswer(null);
     } else {
       setShowResult(true);
-      console.log(result)
     }
   };
-
 
   return (
     <motion.div
@@ -146,7 +133,6 @@ const QuestionCards: React.FC<Props> = ({ quizQuestions }) => {
         variants={FADE_UP_ANIMATION_VARIANTS}
       >
         {!showResult ? (
-          //  Quiz Question Card
           <Card shadow="none">
             <CardHeader>
               <Progress
@@ -174,7 +160,7 @@ const QuestionCards: React.FC<Props> = ({ quizQuestions }) => {
                         selectedAnswerIndex === index ? "primary" : "default"
                       }
                       variant="flat"
-                      onClick={() => handleSelectedOption({ option, index })}
+                      onClick={() => handleSelectedOption(option, index)}
                     >
                       {option}
                     </Button>
@@ -207,64 +193,32 @@ const QuestionCards: React.FC<Props> = ({ quizQuestions }) => {
             </CardFooter>
           </Card>
         ) : (
-          // Result Card
           <Card shadow="none">
             <CardHeader>
               <h1 className="text-2xl font-bold">Quiz Results</h1>
             </CardHeader>
-            <CardBody>
-              <h1>score: {result.score}</h1>
-              <h1>Correct Answer: {result.correctAnswer}</h1>
-              <h1>Wrong Answer: {result.wrongAnswer}</h1>
-              {/* <ChartContainer
-                className="mx-auto aspect-square max-h-[250px]"
-                config={chartConfig}
-              >
-                <PieChart>
-                  <ChartTooltip
-                    content={<ChartTooltipContent hideLabel />}
-                    cursor={false}
-                  />
-                  <Pie
-                    data={chartData}
-                    dataKey="value"
-                    innerRadius={60}
-                    nameKey="name"
-                    strokeWidth={5}
-                  >
-                    <Label
-                      content={({ viewBox }) => {
-                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                          return (
-                            <text
-                              dominantBaseline="middle"
-                              textAnchor="middle"
-                              x={viewBox.cx}
-                              y={viewBox.cy}
-                            >
-                              <tspan
-                                className="fill-foreground text-3xl font-bold"
-                                x={viewBox.cx}
-                                y={viewBox.cy}
-                              >
-                                {result.correctAnswer + result.wrongAnswer}
-                              </tspan>
-                              <tspan
-                                className="fill-muted-foreground"
-                                x={viewBox.cx}
-                                y={(viewBox.cy || 0) + 24}
-                              >
-                                Questions
-                              </tspan>
-                            </text>
-                          );
-                        }
-                      }}
-                    />
-                  </Pie>
-                </PieChart>
-              </ChartContainer> */}
+            <CardBody className="gap-4">
+              <div>
+                <ResultGraph result={result} />
+              </div>
+              <div>
+                <h1>Score: {result.score}</h1>
+                <h1>Correct Answer: {result.correctAnswer}</h1>
+                <h1>Wrong Answer: {result.wrongAnswer}</h1>
+              </div>
             </CardBody>
+            <CardFooter>
+              <Button
+                as={Link}
+                className="w-full"
+                color="success"
+                href="/quiz"
+                startContent={<RotateCw size={18} />}
+                variant="flat"
+              >
+                Play More
+              </Button>
+            </CardFooter>
           </Card>
         )}
       </motion.div>
