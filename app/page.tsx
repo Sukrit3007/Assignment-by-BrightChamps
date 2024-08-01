@@ -55,9 +55,10 @@ export default function Home() {
           className="max-w-prose rounded-md border bg-muted/50 p-4 text-muted-foreground"
           variants={FADE_UP_ANIMATION_VARIANTS}
         >
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          This Quiz App is built with Next.js. I have used NextUI for stylish,
+          modern components and Framer Motion to add smooth, eye-catching
+          animations. On the backend, I have used server actions and MongoDB to
+          manage data smoothly, keeping the app responsive and dynamic.
         </motion.h3>
 
         <motion.div
