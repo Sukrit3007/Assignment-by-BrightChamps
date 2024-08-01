@@ -1,8 +1,4 @@
 import mongoose from "mongoose";
-declare global {
-  var mongoose: any; // This must be a `var` and not a `let / const`
-}
-
 const MONGODB_URI = process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {
@@ -10,36 +6,19 @@ if (!MONGODB_URI) {
     "Please define the MONGODB_URI environment variable inside .env.local",
   );
 }
+let isConnected = false;
 
-let cached = global.mongoose;
+export const dbConnect = async () => {
+  mongoose.set("strictQuery", true);
+  if (isConnected) {
+    console.log("DB connected already");
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
-async function dbConnect() {
-  if (cached.conn) {
-    return cached.conn;
-  }
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      console.log("Connected to Database");
-
-      return mongoose;
-    });
+    return;
   }
   try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
+    await mongoose.connect(MONGODB_URI);
+    isConnected = true;
+  } catch (error) {
+    console.log(error);
   }
-
-  return cached.conn;
-}
-
-export default dbConnect;
+};

@@ -15,7 +15,7 @@ interface QuizDataType {
 
 export default async function QuizPage() {
   const data = await fetchQuiz();
-  const quizData: QuizDataType[] = JSON.parse(JSON.stringify(data));
+  const quizData = await JSON.parse(JSON.stringify(data))
 
   return (
     <div>
@@ -30,7 +30,7 @@ export default async function QuizPage() {
             </h1>
           </CardHeader>
           <CardBody>
-            {quizData.map((quizItem) => (
+            {quizData.map((quizItem: QuizDataType) => (
               <QuizCards
                 key={quizItem._id}
                 quizId={quizItem._id}

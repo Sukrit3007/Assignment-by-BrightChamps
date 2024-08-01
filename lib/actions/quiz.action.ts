@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 
-import dbConnect from "../dbConnect";
+
 import Quiz, { questionType } from "../models/quiz.model";
+import { dbConnect } from "../dbConnect";
 
 export async function createQuiz({
   name,
