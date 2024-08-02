@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import Quiz, { questionType } from "../models/quiz.model";
 import dbConnect from "../dbConnect";
 
+// CREATING QUIZ
 export async function createQuiz({
   name,
   questions,
@@ -26,6 +27,7 @@ export async function createQuiz({
   }
 }
 
+// FETCHING ALL QUIZ DATA
 export interface quizWithIdType {
   _id: string;
   name: string;
@@ -36,23 +38,28 @@ export async function fetchQuiz(): Promise<quizWithIdType[]> {
   try {
     await dbConnect();
     const quiz = await Quiz.find({}).select("_id name").lean();
+    const data = JSON.parse(JSON.stringify(quiz));
 
-    if (!quiz) {
-      throw new Error("Quiz not found");
-    }
-
-    return quiz as quizWithIdType[];
+    return data as quizWithIdType[];
   } catch (error: any) {
     throw new Error(`There is an error fetching quiz data: ${error.message}`);
   }
 }
 
-export async function fetchQuizById(id: string): Promise<quizWithIdType[]> {
+// FETCHING QUIZ BY ID
+
+export async function fetchQuizById(id: string): Promise<quizWithIdType> {
   try {
     await dbConnect();
-    const quiz = await Quiz.findById(id);
+    const quiz = await Quiz.findById(id).lean();
 
-    return quiz as quizWithIdType[];
+    if (!quiz) {
+      throw new Error("Quiz not found");
+    }
+
+    const quizData = JSON.parse(JSON.stringify(quiz))
+
+    return quizData as quizWithIdType;
   } catch (error: any) {
     throw new Error(
       `There is an error fetching quiz questions: ${error.message}`,
@@ -60,6 +67,7 @@ export async function fetchQuizById(id: string): Promise<quizWithIdType[]> {
   }
 }
 
+// DELETING QUIZ BY ID
 export async function deleteQuizById(id: string, path: string): Promise<void> {
   try {
     await dbConnect();

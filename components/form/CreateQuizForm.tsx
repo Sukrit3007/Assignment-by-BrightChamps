@@ -9,6 +9,7 @@ import { PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { Spinner } from "@nextui-org/spinner";
 
 import {
   Form,
@@ -235,6 +236,7 @@ const CreateQuizForm = () => {
           color={loading ? "default" : "success"}
           disabled={loading}
           radius="full"
+          startContent={loading ? <Spinner size="sm" /> : null}
           type="submit"
           variant="flat"
         >

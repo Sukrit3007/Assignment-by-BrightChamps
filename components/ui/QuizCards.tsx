@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Link } from "@nextui-org/link";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
+import { Spinner } from "@nextui-org/spinner";
 
 import { title } from "../primitives";
 
@@ -68,7 +69,9 @@ const QuizCards = ({ quizId, quizName }: Props) => {
               <Button
                 isIconOnly
                 color="danger"
-                endContent={<Trash size={16} />}
+                endContent={
+                  loading ? <Spinner size="sm" /> : <Trash size={16} />
+                }
                 isDisabled={loading}
                 size="sm"
                 variant="flat"

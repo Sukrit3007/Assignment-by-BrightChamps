@@ -1,8 +1,8 @@
 "use client";
 
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { Spinner } from "@nextui-org/spinner";
 import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@nextui-org/skeleton";
 
 import { title } from "@/components/primitives";
 import QuizCards from "@/components/ui/QuizCards";
@@ -15,18 +15,15 @@ interface QuizDataType {
   questions: questionType[];
 }
 
-const fetchAllQuiz = async () => {
-  const data = await fetchQuiz()
-  const quizData = JSON.parse(JSON.stringify(data))
-  return quizData;
+const getAllQuiz = async () => {
+  return await fetchQuiz();
 };
 
 export default function QuizPage() {
-  const { data, isLoading } = useQuery({
+  const { data: quizData, isLoading } = useQuery({
     queryKey: ["quiz-server-action"],
-    queryFn: fetchAllQuiz,
+    queryFn: getAllQuiz,
   });
-  const quizData = data;
 
   return (
     <Card>
@@ -45,9 +42,9 @@ export default function QuizPage() {
           />
         ))}
         {isLoading ? (
-          <div className="flex items-center justify-center gap-2">
-            <Spinner size="sm" />
-            Loading
+          <div className="w-full flex flex-col gap-2">
+            <Skeleton className="h-3 w-3/5 rounded-lg" />
+            <Skeleton className="h-3 w-4/5 rounded-lg" />
           </div>
         ) : null}
       </CardBody>

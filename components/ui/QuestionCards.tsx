@@ -4,28 +4,16 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
-import { CheckIcon, ChevronRightIcon, RotateCw } from "lucide-react";
+import { CheckIcon, ChevronRightIcon, HomeIcon, RotateCw } from "lucide-react";
 import { Progress } from "@nextui-org/progress";
 import { Link } from "@nextui-org/link";
 
 import { ResultGraph } from "./ResultGraph";
 
-interface QuizQuestion {
-  correctOption: string;
-  marks: number;
-  options: string[];
-  questionText: string;
-  timeLimit: number;
-}
-
-interface Quiz {
-  _id: string;
-  name: string;
-  questions: QuizQuestion[];
-}
+import { quizWithIdType } from "@/lib/actions/quiz.action";
 
 interface Props {
-  quizQuestions: Quiz;
+  quizQuestions: quizWithIdType;
 }
 
 const FADE_UP_ANIMATION_VARIANTS = {
@@ -207,7 +195,7 @@ const QuestionCards: React.FC<Props> = ({ quizQuestions }) => {
                 <h1>Wrong Answer: {result.wrongAnswer}</h1>
               </div>
             </CardBody>
-            <CardFooter>
+            <CardFooter className="gap-2">
               <Button
                 as={Link}
                 className="w-full"
@@ -217,6 +205,16 @@ const QuestionCards: React.FC<Props> = ({ quizQuestions }) => {
                 variant="flat"
               >
                 Play More
+              </Button>
+              <Button
+                as={Link}
+                className="w-full"
+                color="primary"
+                href="/"
+                startContent={<HomeIcon size={18} />}
+                variant="flat"
+              >
+                Home
               </Button>
             </CardFooter>
           </Card>
