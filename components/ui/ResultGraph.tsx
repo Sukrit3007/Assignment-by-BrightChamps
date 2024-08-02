@@ -45,10 +45,6 @@ export function ResultGraph({ result }: ResultProps) {
     },
   ];
 
-  const totalScore = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.score, 0);
-  }, [chartData]);
-
   return (
     <Card className="flex flex-col" shadow="none">
       <CardBody className="flex-1 pb-0">
@@ -82,7 +78,7 @@ export function ResultGraph({ result }: ResultProps) {
                           {result.score}
                         </tspan>
                         <tspan
-                          className="fill-muted-foreground"
+                          className="fill-foreground"
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                         >
