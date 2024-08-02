@@ -8,12 +8,13 @@ import { Trash } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "@nextui-org/link";
 import { toast } from "sonner";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Spinner } from "@nextui-org/spinner";
 
 import { title } from "../primitives";
 
 import { deleteQuizById } from "@/lib/actions/quiz.action";
+
 
 interface Props {
   quizId: string;
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const QuizCards = ({ quizId, quizName }: Props) => {
+  const router  = useRouter();
   const [loading, setloading] = useState(false);
   const path = usePathname();
 
@@ -33,6 +35,7 @@ const QuizCards = ({ quizId, quizName }: Props) => {
     try {
       setloading(true);
       await deleteQuizById(id, path);
+      router.push('/');
       toast.info("Quiz deleted successfully");
       setloading(false);
     } catch (error) {
