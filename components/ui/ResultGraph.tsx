@@ -46,10 +46,10 @@ export function ResultGraph({ result }: ResultProps) {
   ];
 
   return (
-    <Card className="flex flex-col" shadow="none">
+    <Card className="flex flex-col w-64 lg:w-full" shadow="none">
       <CardBody className="flex-1 pb-0">
         <ChartContainer className="min-h-[200px] w-full" config={chartConfig}>
-          <PieChart height={250} width={730}>
+          <PieChart height={250} width={600}>
             <Tooltip />
             <Pie
               data={chartData}
